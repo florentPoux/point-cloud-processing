@@ -1,5 +1,6 @@
 # Point-cloud-processing
 A suite of scripts and easy-to-follow tutorial to process point cloud data with Python, from scratch.
+* [Point Cloud Basics](https://medium.com/@florentpoux)
 
 ## Prerequisites
 
