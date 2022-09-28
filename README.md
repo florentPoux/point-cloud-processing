@@ -29,7 +29,7 @@ These tools are developed after my PhD, in order to try and support developers &
 
 * **Florent Poux** - *Idea and development* - [Linkedin](https://twitter.com/ga_nys)
 
-This project is supported by the [3D Geodata Academy](https://learngeodata.eu), that provides 3D Formations around Photogrammetry, Point Cloud Processing, Semantic Segmentation, Classificaiton, Virtual Reality & more.
+This project is supported by the [3D Geodata Academy](https://learngeodata.eu), that provides 3D Courses around Photogrammetry, Point Cloud Processing, Semantic Segmentation, Classificaiton, Virtual Reality & more.
 
 ## License
 
