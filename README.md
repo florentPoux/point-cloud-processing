@@ -4,7 +4,7 @@ A suite of scripts and easy-to-follow tutorial to process point cloud data with 
 
 ## Prerequisites
 
-A computer with internet access, and (optionnally), a Gmail and GDrive account to make it work out of the box.
+A computer with internet access, and (optionally), a Gmail and GDrive account to make it work out of the box.
 
 ## Installing
 
