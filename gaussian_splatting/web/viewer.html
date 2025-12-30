@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaussian Splatting Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+
+        #canvas {
+            flex: 1;
+            cursor: grab;
+        }
+
+        #canvas:active {
+            cursor: grabbing;
+        }
+
+        #panel {
+            width: 300px;
+            background: #2a2a2a;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #4a9eff;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #999;
+            text-transform: uppercase;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background: #4a9eff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #3a8eef;
+        }
+
+        .stats {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #999;
+        }
+
+        .stats span {
+            color: #4a9eff;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .spinner {
+            border: 3px solid #333;
+            border-top: 3px solid #4a9eff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="canvas"></canvas>
+
+        <div id="panel">
+            <h1>Gaussian Splatting Viewer</h1>
+
+            <div class="section">
+                <h2>Load Model</h2>
+                <input type="file" id="fileInput" accept=".bin" style="display: none;">
+                <button onclick="document.getElementById('fileInput').click()">
+                    Load Binary File
+                </button>
+                <button onclick="loadSample()">
+                    Load Sample Scene
+                </button>
+            </div>
+
+            <div class="section">
+                <h2>Camera</h2>
+                <button onclick="resetCamera()">Reset View</button>
+            </div>
+
+            <div class="section">
+                <h2>Statistics</h2>
+                <div class="stats">
+                    <div>Gaussians: <span id="numGaussians">0</span></div>
+                    <div>FPS: <span id="fps">0</span></div>
+                    <div>Camera Distance: <span id="distance">5.0</span></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Info</h2>
+                <div class="stats">
+                    <p>Controls:</p>
+                    <p>• Left drag: Rotate</p>
+                    <p>• Shift+drag: Pan</p>
+                    <p>• Scroll: Zoom</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="hidden">
+        <div class="spinner"></div>
+        <div>Loading model...</div>
+    </div>
+
+    <script src="renderer/splat_renderer.js"></script>
+    <script src="controls/camera_controls.js"></script>
+    <script src="loader/binary_loader.js"></script>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const loading = document.getElementById('loading');
+
+        canvas.width = window.innerWidth - 300;
+        canvas.height = window.innerHeight;
+
+        let renderer, controls;
+        let lastTime = 0;
+        let frameCount = 0;
+        let fpsTime = 0;
+
+        function init() {
+            renderer = new SplatRenderer(canvas);
+            renderer.initShaders();
+
+            controls = createOrbitControls(canvas, renderer);
+
+            animate();
+        }
+
+        function animate(time = 0) {
+            requestAnimationFrame(animate);
+
+            if (renderer.gaussianData) {
+                renderer.render();
+
+                frameCount++;
+                fpsTime += time - lastTime;
+
+                if (fpsTime >= 1000) {
+                    document.getElementById('fps').textContent = frameCount;
+                    frameCount = 0;
+                    fpsTime = 0;
+                }
+            }
+
+            document.getElementById('distance').textContent = controls.distance.toFixed(2);
+            lastTime = time;
+        }
+
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            loading.classList.remove('hidden');
+
+            try {
+                const buffer = await file.arrayBuffer();
+                const data = parseBinarySplat(buffer);
+
+                renderer.loadGaussians(data);
+                document.getElementById('numGaussians').textContent = data.positions.length;
+            } catch (error) {
+                console.error('Error loading file:', error);
+                alert('Error loading file. Please check console for details.');
+            }
+
+            loading.classList.add('hidden');
+        });
+
+        function loadSample() {
+            const sampleData = {
+                positions: [],
+                colors: [],
+                scales: [],
+                rotations: [],
+                opacities: []
+            };
+
+            for (let i = 0; i < 1000; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                const r = Math.random() * 2;
+
+                sampleData.positions.push([
+                    r * Math.sin(phi) * Math.cos(theta),
+                    r * Math.sin(phi) * Math.sin(theta),
+                    r * Math.cos(phi)
+                ]);
+
+                sampleData.colors.push([
+                    Math.random(),
+                    Math.random(),
+                    Math.random()
+                ]);
+
+                sampleData.scales.push([0.05, 0.05, 0.05]);
+                sampleData.rotations.push([1, 0, 0, 0]);
+                sampleData.opacities.push(0.8);
+            }
+
+            renderer.loadGaussians(sampleData);
+            document.getElementById('numGaussians').textContent = sampleData.positions.length;
+        }
+
+        function resetCamera() {
+            controls.rotation = { x: 0, y: 0 };
+            controls.distance = 5.0;
+            controls.pan = { x: 0, y: 0 };
+            updateCamera(renderer, controls);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth - 300;
+            canvas.height = window.innerHeight;
+            renderer.resize(canvas.width, canvas.height);
+        });
+
+        init();
+    </script>
+</body>
+</html>
