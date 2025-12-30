@@ -1,0 +1,1 @@
+"""Orthophoto generation and mosaicking"""
