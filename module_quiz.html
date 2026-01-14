@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial AI Architect - Module Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .question {
+            display: none;
+        }
+
+        .question.active {
+            display: block;
+        }
+
+        .question-header {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            color: #555;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background: #10b981;
+            color: white;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background: #ef4444;
+            color: white;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+
+        .results {
+            display: none;
+            text-align: center;
+        }
+
+        .results.active {
+            display: block;
+        }
+
+        .score {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 30px 0;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            text-align: left;
+            display: none;
+        }
+
+        .explanation.active {
+            display: block;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 10px;
+        }
+
+        .badge-gold {
+            background: #fbbf24;
+            color: #78350f;
+        }
+
+        .badge-silver {
+            background: #d1d5db;
+            color: #374151;
+        }
+
+        .badge-bronze {
+            background: #f97316;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Spatial AI Architect</h1>
+            <p>Module Completion Quiz</p>
+        </div>
+
+        <div class="quiz-card">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+
+            <!-- Questions -->
+            <div class="question active" data-question="0">
+                <div class="question-header">Question 1 of 10</div>
+                <div class="question-text">
+                    What is the primary advantage of using memory-mapped I/O for massive point clouds?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">Faster processing on small datasets</div>
+                    <div class="option" data-answer="1">Ability to work with files larger than RAM</div>
+                    <div class="option" data-answer="2">Better compression ratios</div>
+                    <div class="option" data-answer="3">Automatic data cleaning</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Memory-mapped I/O allows processing of files that don't fit in RAM by loading only the needed portions, making it essential for massive datasets.
+                </div>
+            </div>
+
+            <div class="question" data-question="1">
+                <div class="question-header">Question 2 of 10</div>
+                <div class="question-text">
+                    In 3D Gaussian Splatting, what do quaternions represent?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">Position of Gaussians</div>
+                    <div class="option" data-answer="1">Rotation of Gaussians</div>
+                    <div class="option" data-answer="2">Color of Gaussians</div>
+                    <div class="option" data-answer="3">Opacity values</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Quaternions are a compact representation of 3D rotations, used to orient Gaussians in space.
+                </div>
+            </div>
+
+            <div class="question" data-question="2">
+                <div class="question-header">Question 3 of 10</div>
+                <div class="question-text">
+                    What does DEM stand for in GeoAI mapping?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">Digital Elevation Model</div>
+                    <div class="option" data-answer="1">Data Extraction Method</div>
+                    <div class="option" data-answer="2">Dense Environment Map</div>
+                    <div class="option" data-answer="3">Dynamic Earth Measurement</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Digital Elevation Model represents terrain height across a geographic area.
+                </div>
+            </div>
+
+            <div class="question" data-question="3">
+                <div class="question-header">Question 4 of 10</div>
+                <div class="question-text">
+                    What is the key innovation of PointNet architecture?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">Processing unordered point sets directly</div>
+                    <div class="option" data-answer="1">Requiring voxelization first</div>
+                    <div class="option" data-answer="2">Using only 2D convolutions</div>
+                    <div class="option" data-answer="3">Working with images only</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> PointNet can process raw point clouds without voxelization, maintaining permutation invariance through symmetric functions.
+                </div>
+            </div>
+
+            <div class="question" data-question="4">
+                <div class="question-header">Question 5 of 10</div>
+                <div class="question-text">
+                    What does CLIP enable in zero-shot 3D classification?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">Faster training times</div>
+                    <div class="option" data-answer="1">Classification without training on 3D data</div>
+                    <div class="option" data-answer="2">Higher accuracy than supervised methods</div>
+                    <div class="option" data-answer="3">Automatic data augmentation</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> CLIP's vision-language alignment allows classifying 3D objects using text descriptions without 3D-specific training.
+                </div>
+            </div>
+
+            <div class="question" data-question="5">
+                <div class="question-header">Question 6 of 10</div>
+                <div class="question-text">
+                    What is the main purpose of spatial agentic AI?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">Autonomous task planning and execution</div>
+                    <div class="option" data-answer="1">Faster data loading</div>
+                    <div class="option" data-answer="2">Better visualization</div>
+                    <div class="option" data-answer="3">Data compression</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Agentic AI systems can autonomously plan, execute, and adapt processing strategies based on the task and data.
+                </div>
+            </div>
+
+            <div class="question" data-question="6">
+                <div class="question-header">Question 7 of 10</div>
+                <div class="question-text">
+                    What format is used for BIM interoperability?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">DXF</div>
+                    <div class="option" data-answer="1">IFC</div>
+                    <div class="option" data-answer="2">PLY</div>
+                    <div class="option" data-answer="3">LAS</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Industry Foundation Classes (IFC) is the standard for exchanging BIM data between different software platforms.
+                </div>
+            </div>
+
+            <div class="question" data-question="7">
+                <div class="question-header">Question 8 of 10</div>
+                <div class="question-text">
+                    In Scan-to-BIM, how are walls typically detected?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">Color segmentation</div>
+                    <div class="option" data-answer="1">RANSAC plane fitting</div>
+                    <div class="option" data-answer="2">Neural networks only</div>
+                    <div class="option" data-answer="3">Manual selection</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> RANSAC is robust for detecting planar surfaces like walls, which are then classified by orientation.
+                </div>
+            </div>
+
+            <div class="question" data-question="8">
+                <div class="question-header">Question 9 of 10</div>
+                <div class="question-text">
+                    What is the key benefit of a digital twin?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">One-time static model</div>
+                    <div class="option" data-answer="1">Real-time sync with physical reality</div>
+                    <div class="option" data-answer="2">Lower storage requirements</div>
+                    <div class="option" data-answer="3">Simpler visualization</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Digital twins continuously sync with their physical counterparts, enabling real-time monitoring and prediction.
+                </div>
+            </div>
+
+            <div class="question" data-question="9">
+                <div class="question-header">Question 10 of 10</div>
+                <div class="question-text">
+                    Why use scipy's cKDTree for prediction projection?
+                </div>
+                <div class="options">
+                    <div class="option" data-answer="0">Better accuracy</div>
+                    <div class="option" data-answer="1">Vectorized operations for speed</div>
+                    <div class="option" data-answer="2">Requires less memory</div>
+                    <div class="option" data-answer="3">Automatic normalization</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> cKDTree provides vectorized nearest neighbor queries, essential for efficiently projecting predictions to full resolution.
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="results">
+                <h2>Quiz Complete! 🎉</h2>
+                <div class="score" id="score">0/10</div>
+                <div id="badge"></div>
+                <p id="message"></p>
+                <button class="btn-primary" onclick="restartQuiz()">Take Quiz Again</button>
+            </div>
+
+            <div class="navigation">
+                <button class="btn-secondary" id="prevBtn" onclick="previousQuestion()">Previous</button>
+                <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        const totalQuestions = 10;
+        let answers = new Array(totalQuestions).fill(-1);
+        const correctAnswers = [1, 1, 0, 0, 1, 0, 1, 1, 1, 1];
+
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+
+        function showQuestion(index) {
+            document.querySelectorAll('.question').forEach((q, i) => {
+                q.classList.toggle('active', i === index);
+            });
+
+            document.getElementById('prevBtn').style.display = index === 0 ? 'none' : 'block';
+
+            const nextBtn = document.getElementById('nextBtn');
+            if (index === totalQuestions - 1) {
+                nextBtn.textContent = 'Submit';
+                nextBtn.onclick = submitQuiz;
+            } else {
+                nextBtn.textContent = 'Next';
+                nextBtn.onclick = nextQuestion;
+            }
+
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            answers.forEach((answer, index) => {
+                if (answer === correctAnswers[index]) {
+                    score++;
+                }
+            });
+
+            document.getElementById('score').textContent = score + '/' + totalQuestions;
+
+            let badge = '';
+            let message = '';
+
+            if (score >= 9) {
+                badge = '<span class="badge badge-gold">🏆 Master Level</span>';
+                message = 'Outstanding! You have mastered the Spatial AI concepts!';
+            } else if (score >= 7) {
+                badge = '<span class="badge badge-silver">⭐ Advanced Level</span>';
+                message = 'Great job! You have a strong understanding of the material.';
+            } else if (score >= 5) {
+                badge = '<span class="badge badge-bronze">📚 Intermediate Level</span>';
+                message = 'Good effort! Review the material and try again.';
+            } else {
+                badge = '<span class="badge">📖 Needs Review</span>';
+                message = 'Keep studying! Review the course materials and retake the quiz.';
+            }
+
+            document.getElementById('badge').innerHTML = badge;
+            document.getElementById('message').textContent = message;
+
+            document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+            document.querySelector('.results').classList.add('active');
+            document.querySelector('.navigation').style.display = 'none';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = new Array(totalQuestions).fill(-1);
+
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            document.querySelector('.results').classList.remove('active');
+            document.querySelector('.navigation').style.display = 'flex';
+
+            showQuestion(0);
+        }
+
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const questionElement = this.closest('.question');
+                const questionIndex = parseInt(questionElement.dataset.question);
+                const answerIndex = parseInt(this.dataset.answer);
+
+                questionElement.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+
+                this.classList.add('selected');
+                answers[questionIndex] = answerIndex;
+
+                const explanation = questionElement.querySelector('.explanation');
+                if (answerIndex === correctAnswers[questionIndex]) {
+                    this.classList.add('correct');
+                    explanation.classList.add('active');
+                } else {
+                    this.classList.add('incorrect');
+                }
+            });
+        });
+
+        showQuestion(0);
+    </script>
+</body>
+</html>
