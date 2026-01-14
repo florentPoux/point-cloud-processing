@@ -1,0 +1,25 @@
+# Spatial AI Studio GUI Requirements
+# Premium PyQt interface with PyVista integration
+
+# Core GUI
+PyQt5>=5.15.0
+pyvistaqt>=0.9.0
+pyvista>=0.38.0
+
+# Visualization
+matplotlib>=3.5.0
+imageio>=2.19.0
+imageio-ffmpeg>=0.4.7
+
+# Scientific computing (already in main requirements)
+numpy>=1.21.0
+scipy>=1.7.0
+
+# 3D Processing
+vtk>=9.1.0
+
+# Optional enhancements
+pillow>=9.0.0
+opencv-python>=4.5.0
+
+# Note: Install with: pip install -r requirements_gui.txt

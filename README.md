@@ -51,11 +51,32 @@ Real-time digital twins with IoT integration and predictive analytics
 git clone https://github.com/florentPoux/point-cloud-processing.git
 cd point-cloud-processing
 
-# Install dependencies
+# Install core dependencies
 pip install numpy scipy scikit-learn matplotlib torch laspy
+
+# Install GUI dependencies (optional but recommended)
+pip install -r requirements_gui.txt
 ```
 
-### Your First Pipeline
+### 🖥️ Premium GUI Application
+
+**NEW!** Launch the Spatial AI Studio for interactive tutorial execution with automatic visualization generation:
+
+```bash
+python spatial_ai_studio.py
+```
+
+**Features:**
+- 🎨 Premium dark mode interface
+- 🔬 PyVista 3D interactive viewer
+- 📊 Automatic plot and GIF generation (45° viewing angle)
+- 📁 Article-ready structured output
+- 🚀 Run all 9 system tutorials with one click
+- 📈 Real-time progress tracking
+
+See [GUI_README.md](GUI_README.md) for complete documentation.
+
+### Your First Pipeline (Code)
 
 ```python
 from data.io_manager import read_las_full
